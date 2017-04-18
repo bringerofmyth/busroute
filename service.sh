@@ -3,14 +3,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Keep the pwd in mind!
 # Example: RUN="java -jar $DIR/target/magic.jar"
-NAME="BusRoute-0.0.1-SNAPSHOT.jar"
-RUN="java -jar build/libs/"$NAME
-#jps -v  | grep $NAME | awk '{print $1}'|xargs kill -9 
-
 DATA_FILE=$2
+NAME="BusRoute-0.0.1-SNAPSHOT.jar"
+RUN="java -DrouteMap=$DATA_FILE -jar build/libs/"$NAME
 
 PIDFILE=/tmp/$NAME.pid
-LOGFILE=/tmp/$NAME.log
+LOGFILE=logs/app.log
 
 start() {
     if [ -f $PIDFILE ]; then
@@ -21,9 +19,15 @@ start() {
             rm -f $PIDFILE
         fi
     fi
+    echo 'Service starting, please wait'
     local CMD="$RUN $DATA_FILE &> \"$LOGFILE\" & echo \$!"
     sh -c "$CMD" > $PIDFILE
-    echo 'service started!'
+    tail -f $LOGFILE | while read LOGLINE
+    do
+       [[ "${LOGLINE}" == *"Started BusRouteApplication"* ]] && pkill -P $$ tail
+    done
+
+    echo 'Service started'
 }
 
 stop() {
@@ -32,7 +36,7 @@ stop() {
         return 1
     fi
     kill -15 $(cat $PIDFILE) && rm -f $PIDFILE
-    echo 'stopped, bye!'
+    echo 'Service stopped, bye!'
 }
 
 case $1 in
