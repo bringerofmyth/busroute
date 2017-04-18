@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 @RestController
 public class BusRouteController {
 
-    private static final Logger LOGGER = Logger.getLogger( BusRouteService.class.getName() );
-    @Qualifier("routeService")
+    private static final Logger LOGGER = Logger.getLogger(BusRouteService.class.getName());
+    @Qualifier("busRouteService")
     @Autowired
     private BusRouteService routeService;
 
@@ -25,7 +25,6 @@ public class BusRouteController {
     public RouteResponse getHasDirectRoute(@RequestParam("dep_sid") int departureStation,
                                            @RequestParam("arr_sid") int arrivalStation) {
 
-        LOGGER.info("get info");
         boolean isDirect = routeService.isExists(departureStation, arrivalStation);
 
         RouteResponse response = new RouteResponse();
