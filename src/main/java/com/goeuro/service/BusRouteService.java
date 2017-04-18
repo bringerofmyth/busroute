@@ -24,10 +24,6 @@ public class BusRouteService {
         return routeMap;
     }
 
-    public void print() {
-        routeMap.forEach((key, value) -> LOGGER.info(key + ":" + value));
-    }
-
     public boolean isExists(int departure, int arrival) {
         if (routeMap == null || routeMap.isEmpty()) return false;
         HashSet<Integer> set = routeMap.get(departure);

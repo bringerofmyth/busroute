@@ -55,8 +55,14 @@ public class BusRouteConfiguration {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             String line;
-            while ((line = br.readLine()) != null) {
+
+            int total = Integer.valueOf(br.readLine().trim());
+
+            while (total > 0) {
+                line = br.readLine();
+                System.out.println(line);
                 parseLine(line, mapping);
+                total--;
             }
             br.close();
 

@@ -22,12 +22,12 @@ start() {
     echo 'Service starting, please wait'
     local CMD="$RUN $DATA_FILE &> \"$LOGFILE\" & echo \$!"
     sh -c "$CMD" > $PIDFILE
+
     tail -f $LOGFILE | while read LOGLINE
     do
-       [[ "${LOGLINE}" == *"Started BusRouteApplication"* ]] && pkill -P $$ tail
+       [[ "${LOGLINE}" == *"Started BusRouteApplication"* ]] && pkill -P $$ tail && tail -10 $LOGFILE && echo 'Service started'
     done
 
-    echo 'Service started'
 }
 
 stop() {
@@ -36,6 +36,7 @@ stop() {
         return 1
     fi
     kill -15 $(cat $PIDFILE) && rm -f $PIDFILE
+    tail -20 $LOGFILE
     echo 'Service stopped, bye!'
 }
 
